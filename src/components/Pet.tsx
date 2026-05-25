@@ -56,9 +56,8 @@ const CatSitting = ({ dark, anim, animKey }: { dark: boolean; anim: MiniAnim; an
       />
       {/* Neck */}
       <rect x="42" y="74" width="16" height="12" rx="4" fill={f} />
-      {/* Head — shake when miniAnim=headshake; key forces DOM remount so animation replays */}
+      {/* Head — shake when miniAnim=headshake */}
       <g
-        key={anim === 'headshake' ? `hs-${animKey}` : 'head'}
         style={{
           transformBox: 'fill-box',
           transformOrigin: 'center bottom',
@@ -89,16 +88,16 @@ const CatSitting = ({ dark, anim, animKey }: { dark: boolean; anim: MiniAnim; an
         <line x1="62" y1="58" x2="82" y2="56" stroke={i} strokeWidth="1" opacity="0.7" />
         <line x1="62" y1="61" x2="82" y2="61" stroke={i} strokeWidth="1" opacity="0.7" />
       </g>
-      {/* Groom arm — key forces remount so animation always replays */}
+      {/* Groom arm */}
       {anim === 'groom' && (
-        <g key={`groom-${animKey}`} style={{ transformBox: 'fill-box', transformOrigin: 'bottom center', animation: 'groom 2.2s ease-in-out' }}>
+        <g style={{ transformBox: 'fill-box', transformOrigin: 'bottom center', animation: 'groom 2.2s ease-in-out' }}>
           <path d="M38,90 Q28,72 35,60" fill="none" stroke={f} strokeWidth="8" strokeLinecap="round" />
           <circle cx="35" cy="58" r="6" fill={f} />
         </g>
       )}
-      {/* Ball — key forces remount */}
+      {/* Ball */}
       {anim === 'playball' && (
-        <g key={`ball-${animKey}`} style={{ animation: 'ball 0.9s ease-in-out infinite' }}>
+        <g style={{ animation: 'ball 0.9s ease-in-out infinite' }}>
           <circle cx="80" cy="122" r="8" fill="#ef4444" />
           <path d="M74,118 Q80,114 86,118" fill="none" stroke="#fff" strokeWidth="1.5" opacity="0.8" />
           <circle cx="80" cy="122" r="8" fill="none" stroke="#b91c1c" strokeWidth="1" opacity="0.5" />
@@ -221,9 +220,11 @@ export const Pet = () => {
   const continuousUsageRef     = useRef<number>(0);
 
   // Refs to always hold latest values — avoids closure staleness in timers
-  const petStateRef  = useRef(petState);
-  const isNightRef   = useRef(false);
+  const petStateRef   = useRef(petState);
+  const isNightRef    = useRef(false);
+  const nightPoseRef  = useRef<NightPose>('sit');
   useEffect(() => { petStateRef.current = petState; }, [petState]);
+  useEffect(() => { nightPoseRef.current = nightPose; }, [nightPose]);
 
   // isUsageRemind: true = the remind was triggered by 1hr usage (not timer end)
   const [isUsageRemind, setIsUsageRemind] = useState(false);
@@ -307,7 +308,7 @@ export const Pet = () => {
     }, 8000);
 
     zzzTimerRef.current = setInterval(() => {
-      if (nightPose === 'lie') {
+      if (nightPoseRef.current === 'lie') {
         setShowZzz(true);
         setTimeout(() => setShowZzz(false), 3000);
       }
@@ -431,7 +432,7 @@ export const Pet = () => {
     if (petState === 'focus') return <CatFocus dark={settings.isDarkMode} />;
     if (petState === 'rest')  return <CatLying dark={settings.isDarkMode} />;
     if (isNight && nightPose === 'lie' && petState === 'idle') return <CatLying dark={settings.isDarkMode} />;
-    return <CatSitting dark={settings.isDarkMode} anim={petState === 'idle' ? miniAnim : 'none'} animKey={animKey} />;
+    return <CatSitting key={animKey} dark={settings.isDarkMode} anim={petState === 'idle' ? miniAnim : 'none'} animKey={animKey} />;
   };
 
   // ── Outer animation class ────────────────────────────────────────────────

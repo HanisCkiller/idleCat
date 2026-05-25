@@ -198,7 +198,7 @@ All colors MUST be HSL.
 .animate-wiggle     { animation: wiggle 0.5s ease-in-out infinite; }
 .animate-tail       { animation: tail 1.6s ease-in-out infinite; }
 .animate-tail-slow  { animation: tail-slow 3s ease-in-out infinite; }
-.animate-headshake  { animation: headshake 1.2s ease-in-out; }
+.animate-headshake  { animation: headshake 1.4s ease-in-out; }
 .animate-groom      { animation: groom 2.2s ease-in-out; }
 .animate-ball       { animation: ball 0.9s ease-in-out infinite; }
 .animate-zzz        { animation: zzz 2.4s ease-in-out forwards; }
